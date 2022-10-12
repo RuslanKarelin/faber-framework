@@ -1,0 +1,10 @@
+.idea
+.env
+/node_modules
+/vendor
+supervisord.log
+supervisord.pid
+storage/cache/*
+/data
+/docker-compose.yaml
+/docker

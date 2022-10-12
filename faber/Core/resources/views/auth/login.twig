@@ -1,0 +1,29 @@
+{% extends "layouts/default.twig" %}
+
+{% block title %}Login{% endblock %}
+{% block content %}
+    <h2>Login</h2>
+    <form action="{{ route('login') }}" method="post" class="w-50 mx-auto">
+        {{ csrf() }}
+        {% if errors.has('auth.fail') and not errors.has('password') and not errors.has('login') %}
+            <span class="text-danger">{{ errors.first('auth.fail') }}</span>
+        {% endif %}
+        <div class="form-group">
+            <label for="exampleInputLogin">Login</label>
+            <input type="text" class="form-control" name="login" value="{{ old('login') }}" id="exampleInputLogin"
+                   placeholder="Login">
+            {% if errors.has('login') %}
+                <span class="text-danger">{{ errors.first('login') }}</span>
+            {% endif %}
+        </div>
+        <div class="form-group">
+            <label for="exampleInputPassword">Password</label>
+            <input type="password" class="form-control" name="password" id="exampleInputPassword"
+                   placeholder="Password">
+            {% if errors.has('password') %}
+                <span class="text-danger">{{ errors.first('password') }}</span>
+            {% endif %}
+        </div>
+        <button type="submit" class="btn btn-primary">Login</button>
+    </form>
+{% endblock %}

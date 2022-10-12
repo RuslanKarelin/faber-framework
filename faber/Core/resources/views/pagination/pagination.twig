@@ -1,0 +1,30 @@
+{% if paginator.hasPages() %}
+    <div class="pagination">
+        {% if paginator.onFirstPage() %}
+            <span class="page-link" aria-hidden="true">1</span>
+        {% else %}
+            <a href="{{ paginator.previousPageUrl() }}" class="prev-button">&lsaquo;</a>
+            <a href="{{ paginator.firstPageUrl() }}" class="prev-button">1</a>
+        {% endif %}
+
+         {% for element in elements %}
+
+            {% if element is iterable %}
+                {% if element.page == paginator.currentPage() %}
+                    <span class="current">{{ element.page }}</span>
+                {% elseif not element.url %}
+                    <span>{{ element.page }}</span>
+                {% else %}
+                    <a href="{{ element.url }}">{{ element.page }}</a>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+
+        {% if paginator.hasMorePages() %}
+            <a href="{{ paginator.lastPageUrl() }}" class="next-button">{{ paginator.totalPage() }}</a>
+            <a href="{{ paginator.nextPageUrl() }}" class="next-button">&rsaquo;</a>
+        {% else %}
+            <span class="page-link" aria-hidden="true">{{ paginator.totalPage() }}</span>
+        {% endif %}
+    </div>
+{% endif %}
