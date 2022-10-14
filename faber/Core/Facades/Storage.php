@@ -11,6 +11,7 @@ use Faber\Core\Contracts\Filesystem\Filesystem;
  * @method static bool append(string $path, string $data)
  * @method static string|false read(string $path)
  * @method static string|null upload(array $data)
+ * @method static bool exist(string $path)
  *
  * @see Filesystem
  */

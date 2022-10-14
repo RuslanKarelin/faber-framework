@@ -2,9 +2,12 @@
 
 namespace Faber\Core\Session;
 
+use Faber\Core\DI\Container;
+use Faber\Core\DI\Reflection;
 use SessionHandlerInterface;
 use Faber\Core\Helpers\Str;
 use Faber\Core\Enums\Session as SessionEnum;
+use Faber\Core\Cookie\Cookie;
 
 class Store
 {
@@ -14,13 +17,14 @@ class Store
     protected string $name;
     protected array $attributes = [];
     protected SessionHandlerInterface $handler;
+    protected Cookie $cookie;
 
     public function __construct($name, SessionHandlerInterface $handler, $id = null)
     {
         $this->id = $id;
         $this->name = $name;
         $this->handler = $handler;
-
+        $this->cookie = Container::getInstance()->get(Reflection::class)->createObject(Cookie::class);
     }
 
     protected function isIdValid(string|null $id): bool
@@ -112,5 +116,12 @@ class Store
     public function generateToken(): void
     {
         $this->set(SessionEnum::TOKEN, Str::random(static::ID_LENGTH));
+    }
+
+    public function regenerate(): void
+    {
+        $this->setId($this->generateSessionId());
+        $this->generateToken();
+        $this->cookie->set(static::SESSION_NAME, $this->getId(), 0, '/');
     }
 }

@@ -74,4 +74,9 @@ class Filesystem implements IFilesystem
         $path = str_replace('/storage/', '/', $path);
         return $this->path . $path;
     }
+
+    public function exist(string $path): bool
+    {
+        return file_exists($this->path . '/' . $path);
+    }
 }

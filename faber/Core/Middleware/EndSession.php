@@ -19,9 +19,8 @@ class EndSession
         $this->sessionStore->set(SessionEnum::OLD, $request->all());
         $this->sessionStore->delete(SessionEnum::FLASH);
         $this->sessionStore->delete(SessionEnum::ERRORS);
-        if ($this->sessionStore->getId()) {
-            $this->sessionStore->write();
-        }
+        $this->sessionStore->write();
+
         return $next($request);
     }
 }

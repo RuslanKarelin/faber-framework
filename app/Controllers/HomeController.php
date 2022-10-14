@@ -12,6 +12,7 @@ class HomeController extends Controller
     {
         $this->response = $response;
     }
+
     public function index(): void
     {
         $this->response->view('v1.home', [

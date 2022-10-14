@@ -30,7 +30,7 @@ class Cookie
         return (!empty($_COOKIE[$name])) ? $_COOKIE[$name] : $default;
     }
 
-    public function delete(string $name, string $path): void
+    public function delete(string $name, string $path = '/'): void
     {
         setcookie($name, '', -1, $path);
         unset($_COOKIE[$name]);

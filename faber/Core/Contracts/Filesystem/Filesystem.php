@@ -15,4 +15,6 @@ interface Filesystem
     public function read(string $path): string|false;
 
     public function delete(string $path);
+
+    public function exist(string $path): bool;
 }
