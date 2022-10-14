@@ -7,6 +7,7 @@ class Finder
     protected string $path;
     protected array $files = [];
     protected array $directories = [];
+    protected bool $isIgnoringTheDotPrefix = false;
 
     public function path($path): static
     {
@@ -33,6 +34,7 @@ class Finder
             $fileList = scandir($this->path);
             foreach ($fileList as $file) {
                 if (!is_dir($this->path . '/' . $file)) {
+                    if ($this->isIgnoringTheDotPrefix && str_starts_with($file, '.')) continue;
                     $this->files[] = $file;
                 }
             }
@@ -88,5 +90,11 @@ class Finder
     public function getDirectories(): array
     {
         return $this->directories;
+    }
+
+    public function ignoreFilesWithTheDotPrefix(): static
+    {
+        $this->isIgnoringTheDotPrefix = true;
+        return $this;
     }
 }

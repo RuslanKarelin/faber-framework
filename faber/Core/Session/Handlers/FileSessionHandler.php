@@ -38,6 +38,7 @@ class FileSessionHandler implements SessionHandlerInterface, SessionHandler
     {
         $sessionId = $this->sessionStore->getId();
         $files = (new Finder())->path(config('session.files'))
+            ->ignoreFilesWithTheDotPrefix()
             ->files()
             ->subDate($max_lifetime)
             ->getFiles();

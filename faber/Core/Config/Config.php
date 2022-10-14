@@ -6,12 +6,13 @@ use Faber\Core\Filesystem\Finder;
 
 class Config
 {
+    const CONFIG_DIRECTORY = '/config';
     protected static array $config = [];
 
     public function init(): void
     {
-        $configDirectory = root_path() . '/config';
-        $fileList = (new Finder())->path('../config')->files()->getFiles();
+        $configDirectory = root_path() . static::CONFIG_DIRECTORY;
+        $fileList = (new Finder())->path('..' . static::CONFIG_DIRECTORY)->files()->getFiles();
         foreach ($fileList as $file) {
             $fileNameArray = explode('.', $file);
             $fileName = array_shift($fileNameArray);
