@@ -127,7 +127,7 @@ class Route
 
     public function addRoutes(): static
     {
-        $fileList = (new Finder())->path('../routes')->recursive()->getFiles();
+        $fileList = (new Finder())->path(root_path('routes'))->recursive()->getFiles();
         foreach ($fileList as $file) {
             $this->routeType = pathinfo($file, PATHINFO_FILENAME);
             require_once $file;

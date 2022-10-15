@@ -7,6 +7,26 @@ use Faber\Core\Contracts\Filesystem\Filesystem as IFilesystem;
 class Filesystem implements IFilesystem
 {
     protected string $path = '';
+    protected bool $isDiskSet = false;
+
+    protected function setPath(string $path): string
+    {
+        if ($this->isDiskSet) $path = $this->path . $path;
+        return $path;
+    }
+
+    protected function mkdir(string $path): void
+    {
+        $pathArray = explode('/', $path);
+        unset($pathArray[count($pathArray) - 1]);
+        $pathString = '';
+        foreach ($pathArray as $item) {
+            $pathString .= $item . '/';
+            if (!file_exists($pathString)) {
+                mkdir($pathString, 0755);
+            }
+        }
+    }
 
     public function __construct()
     {
@@ -15,55 +35,51 @@ class Filesystem implements IFilesystem
 
     public function put(string $path, string $data): bool
     {
-        if (boolval(file_put_contents($this->path . '/' . $path, $data))) return true;
+        $path = $this->setPath($path);
+        $this->mkdir($path);
+        if (boolval(file_put_contents($path, $data))) return true;
         return false;
     }
 
     public function append(string $path, string $data): bool
     {
-        if (!file_exists($this->path . '/' . $path))
-            file_put_contents($this->path . '/' . $path, '');
-        if (boolval(file_put_contents($this->path . '/' . $path, $data . PHP_EOL, FILE_APPEND | LOCK_EX)))
+        $path = $this->setPath($path);
+        $this->mkdir($path);
+        if (!file_exists($path))
+            file_put_contents($path, '');
+        if (boolval(file_put_contents($path, $data . PHP_EOL, FILE_APPEND | LOCK_EX)))
             return true;
         return false;
     }
 
     public function disk(string $name): static
     {
-        $this->path .= '/app/' . $name;
-        if (!file_exists($this->path)) mkdir($this->path, 0755);
+        $this->isDiskSet = true;
+        $this->path .= 'app/' . $name . '/';
+        $this->mkdir($this->path);
         return $this;
     }
 
     public function delete(string $path)
     {
-        $path = $this->path . '/' . $path;
+        $path = $this->setPath($path);
         if (is_file($path)) unlink($path);
         else rmdir($path);
     }
 
     public function read(string $path): string|false
     {
-        if (!file_exists($this->path . '/' . $path)) return false;
-        return file_get_contents($this->path . '/' . $path);
+        $path = $this->setPath($path);
+        if (!file_exists($path)) return false;
+        return file_get_contents($path);
     }
 
     public function upload(array $data): ?string
     {
         $this->disk('public');
-        $filePath = $this->path;
-
-        $relativePath = '/uploads/';
-        if (!file_exists($filePath . $relativePath))
-            mkdir($filePath . $relativePath, 0755);
-
-        $relativePath .= date('Y');
-        if (!file_exists($filePath . $relativePath))
-            mkdir($filePath . $relativePath, 0755);
-
-        $relativePath .= '/' . basename(time() . '_' . $data['name']);
-
-        if (move_uploaded_file($data['tmp_name'], $filePath . $relativePath)) {
+        $relativePath = '/uploads/' . date('Y') . '/' . basename(time() . '_' . $data['name']);
+        $this->mkdir($this->path . $relativePath);
+        if (move_uploaded_file($data['tmp_name'], $this->path . $relativePath)) {
             return '/storage' . $relativePath;
         }
         return null;
@@ -71,12 +87,12 @@ class Filesystem implements IFilesystem
 
     public function get(string $path): string
     {
-        $path = str_replace('/storage/', '/', $path);
+        $path = ltrim($path, '/storage');
         return $this->path . $path;
     }
 
     public function exist(string $path): bool
     {
-        return file_exists($this->path . '/' . $path);
+        return file_exists($path);
     }
 }

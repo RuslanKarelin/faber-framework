@@ -13,6 +13,11 @@ class FileSessionHandler implements SessionHandlerInterface, SessionHandler
 {
     protected IFilesystem $filesystem;
 
+    protected function getPath(string $id): string
+    {
+        return storage_path(config('session.files')) . '/' . $id;
+    }
+
     public function __construct()
     {
         $this->filesystem = Container::getInstance()->get(Reflection::class)->createObject(IFilesystem::class);
@@ -25,19 +30,19 @@ class FileSessionHandler implements SessionHandlerInterface, SessionHandler
 
     public function destroy(string $id): bool
     {
-        $this->filesystem->delete(config('session.files') . '/' . $id);
+        $this->filesystem->delete($this->getPath($id));
         return true;
     }
 
     public function gc(int $max_lifetime): int|false
     {
-        $files = (new Finder())->path(config('session.files'))
+        $files = (new Finder())->path(storage_path(config('session.files')))
             ->ignoreFilesWithTheDotPrefix()
             ->files()
             ->subDate($max_lifetime)
             ->getFiles();
         foreach ($files as $id) {
-            $this->filesystem->delete(config('session.files') . '/' . $id);
+            $this->filesystem->delete($this->getPath($id));
         }
         return false;
     }
@@ -49,16 +54,16 @@ class FileSessionHandler implements SessionHandlerInterface, SessionHandler
 
     public function read(string $id): string|false
     {
-        return $this->filesystem->read(config('session.files') . '/' . $id);
+        return $this->filesystem->read($this->getPath($id));
     }
 
     public function write(string $id, string $data): bool
     {
-        return $this->filesystem->put(config('session.files') . '/' . $id, $data);
+        return $this->filesystem->put($this->getPath($id), $data);
     }
 
     public function hasById($id): bool
     {
-        return $this->filesystem->exist(config('session.files') . '/' . $id);
+        return $this->filesystem->exist($this->getPath($id));
     }
 }

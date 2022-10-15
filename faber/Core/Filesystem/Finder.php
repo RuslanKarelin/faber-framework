@@ -11,7 +11,7 @@ class Finder
 
     public function path($path): static
     {
-        $this->path = storage_path() . '/' . $path;
+        $this->path = $path;
         return $this;
     }
 

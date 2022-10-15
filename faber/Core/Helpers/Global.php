@@ -88,28 +88,29 @@ if (!function_exists('config')) {
 if (!function_exists('root_path')) {
     function root_path(string $path = ''): string
     {
-        return $_SERVER['DOCUMENT_ROOT'] . '/..' . $path;
+        $root = rtrim($_SERVER['DOCUMENT_ROOT'], 'public/');
+        return $root . '/' . $path;
     }
 }
 
 if (!function_exists('storage_path')) {
     function storage_path(string $path = ''): string
     {
-        return root_path() . '/storage' . $path;
+        return root_path() . 'storage/' . $path;
     }
 }
 
 if (!function_exists('public_path')) {
     function public_path(string $path = ''): string
     {
-        return root_path() . '/public' . $path;
+        return root_path() . 'public/' . $path;
     }
 }
 
 if (!function_exists('resources_path')) {
     function resources_path(string $path = ''): string
     {
-        return root_path() . '/resources' . $path;
+        return root_path() . 'resources/' . $path;
     }
 }
 
