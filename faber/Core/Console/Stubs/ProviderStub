@@ -1,0 +1,12 @@
+<?php
+
+namespace App\Providers:namespace;
+
+use Faber\Core\Providers\ServiceProvider;
+
+class :class extends ServiceProvider
+{
+    public function register(): void
+    {
+    }
+}

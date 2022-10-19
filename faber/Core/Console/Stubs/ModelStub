@@ -1,0 +1,10 @@
+<?php
+
+namespace App\Models:namespace;
+
+use Faber\Core\Models\Model;
+
+class :class extends Model
+{
+
+}

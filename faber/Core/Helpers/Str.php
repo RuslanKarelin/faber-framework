@@ -10,4 +10,9 @@ class Str
         shuffle($data);
         return implode('', array_splice($data, 0, $length));
     }
+
+    public static function ucfirst(string $string): string
+    {
+        return ucfirst($string);
+    }
 }

@@ -36,7 +36,7 @@ class Request
         $this->serverData = $_SERVER;
         $this->uri = $this->serverData['REQUEST_URI'] ?? '';
         $urlData = parse_url($this->uri);
-        $this->method = mb_strtolower($this->serverData['REQUEST_METHOD']) ?? '';
+        $this->method = mb_strtolower($this->serverData['REQUEST_METHOD'] ?? '');
         $this->query = $urlData['query'] ?? '';
         $this->path = $urlData['path'] ?? '';
         $this->attributes = array_merge($_GET, $_POST, $_FILES);

@@ -1,0 +1,9 @@
+#!/usr/bin/php
+<?php
+
+use Faber\Core\Console\FaberConsole;
+use Faber\Core\DI\Reflection;
+
+require __DIR__ . '/vendor/autoload.php';
+
+(new Reflection())->createObject(FaberConsole::class)->run($argv);

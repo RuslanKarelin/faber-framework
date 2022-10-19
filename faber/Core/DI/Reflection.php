@@ -40,7 +40,7 @@ class Reflection
                 $params = [];
                 foreach ($parametrs as $parametr) {
                     $parametrName = $parametr->getName();
-                    if (array_key_exists($parametrName, $routeParams)) {
+                    if ($routeParams && array_key_exists($parametrName, $routeParams)) {
                         $params[] = $routeParams[$parametrName];
                     } else {
                         $params[] = $this->createObject($parametr->getType()->getName());

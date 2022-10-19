@@ -89,6 +89,7 @@ if (!function_exists('root_path')) {
     function root_path(string $path = ''): string
     {
         $root = rtrim($_SERVER['DOCUMENT_ROOT'], 'public/');
+        $root = $root ?:  dirname(__DIR__).'/../../';
         return $root . '/' . $path;
     }
 }

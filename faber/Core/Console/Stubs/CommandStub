@@ -1,0 +1,16 @@
+<?php
+
+namespace App\Console\Commands:namespace;
+
+use Faber\Core\Console\Command;
+
+class :class extends Command
+{
+    protected static string $signature = '';
+
+    protected static string $description = '';
+
+    public function handle() {
+
+    }
+}

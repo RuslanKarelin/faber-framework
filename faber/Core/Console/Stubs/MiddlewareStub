@@ -1,0 +1,14 @@
+<?php
+
+namespace Faber\Core\Middleware:namespace;
+
+use Faber\Core\Request\Request;
+use Closure;
+
+class :class
+{
+    public function handle(Request $request, Closure $next)
+    {
+        return $next($request);
+    }
+}
