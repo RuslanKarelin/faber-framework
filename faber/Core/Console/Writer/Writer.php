@@ -32,4 +32,25 @@ class Writer
             static::writeColorMessage($message, Foreground::RED);
         }
     }
+
+    public static function table(array $data): void
+    {
+        $columns = [];
+        foreach ($data as $rowKey => $row) {
+            foreach ($row as $cellKey => $cell) {
+                $length = strlen($cell);
+                if (empty($columns[$cellKey]) || $columns[$cellKey] < $length) {
+                    $columns[$cellKey] = $length;
+                }
+            }
+        }
+
+        $table = '';
+        foreach ($data as $rowKey => $row) {
+            foreach ($row as $cellKey => $cell)
+                $table .= str_pad($cell, $columns[$cellKey]) . '   ';
+            $table .= PHP_EOL;
+        }
+        echo "\e[" . Foreground::YELLOW . "m" . $table . "\e[0m\n";;
+    }
 }
