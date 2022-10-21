@@ -12,9 +12,9 @@ use Faber\Core\Console\Writer\Writer;
 class Migrate extends Command
 {
     protected static string $signature = 'migrate';
-
     protected static string $description = 'Performing migrations';
-
+    protected int $batch = 1;
+    protected array $completedMigrations = [];
     const MIGRATIONS_TABLE = 'migrations';
 
     protected function writeResult(bool $initialize, array $successfulMigrations = []): void
@@ -35,9 +35,11 @@ class Migrate extends Command
         $successfulMigrations = [];
         $files = (new Finder())->path($path)->files()->getFiles();
         foreach ($files as $file) {
-            $object = new (include $path . DIRECTORY_SEPARATOR . $file)();
+            $filePath = $path . DIRECTORY_SEPARATOR . $file;
+            $migrationFileName = pathinfo($filePath, PATHINFO_FILENAME);
+            if (in_array($migrationFileName, $this->completedMigrations)) continue;
+            $object = new (include $filePath)();
             try {
-                $migrationFileName = pathinfo($path . DIRECTORY_SEPARATOR . $file, PATHINFO_FILENAME);
                 $object->up();
                 $successfulMigrations[] = [
                     'migration' => $migrationFileName,
@@ -53,12 +55,8 @@ class Migrate extends Command
         $this->writeResult($initialize, $successfulMigrations);
     }
 
-    /**
-     * @throws DBException
-     */
-    public function handle()
+    protected function initialize(): void
     {
-        $batch = 1;
         if (!DB::tableExists(static::MIGRATIONS_TABLE)) {
             $this->up(dirname(__DIR__) . '/../../Database/Migrations/migrations', true);
         } else {
@@ -67,8 +65,17 @@ class Migrate extends Command
                 ->limit(1)
                 ->get()
                 ->first();
-            if ($object) $batch = ++$object->batch;
+            if ($object) $this->batch = ++$object->batch;
+            $this->completedMigrations = Migration::select('migration')->get()->pluck('migration')->toArray();
         }
-        $this->up(root_path(config('database.migrationPath')), false, $batch);
+    }
+
+    /**
+     * @throws DBException
+     */
+    public function handle()
+    {
+        $this->initialize();
+        $this->up(root_path(config('database.migrationPath')), false, $this->batch);
     }
 }

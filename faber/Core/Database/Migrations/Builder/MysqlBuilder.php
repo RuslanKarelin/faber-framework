@@ -7,6 +7,7 @@ use Faber\Core\Database\Migrations\Builder\Columns\IntegerColumn;
 use Faber\Core\Database\Migrations\Builder\Columns\StringColumn;
 use Faber\Core\Database\Migrations\Builder\Columns\TextColumn;
 use Faber\Core\Database\Migrations\Builder\Columns\TimestampColumn;
+use Faber\Core\Database\Migrations\Builder\Foreign\Foreign;
 
 class MysqlBuilder extends AbstractBuilder
 {
@@ -16,6 +17,11 @@ class MysqlBuilder extends AbstractBuilder
         if ($this->string) {
             foreach ($this->string as $stringColumn) {
                 $this->query .= $prefix . $this->getStringColumn($stringColumn);
+                if (method_exists($stringColumn, 'getUnique')) {
+                    if ($stringColumn->getUnique()) {
+                        $this->query .= $prefix . $this->setUnique($stringColumn);
+                    }
+                }
             }
         }
 
@@ -36,6 +42,18 @@ class MysqlBuilder extends AbstractBuilder
                 $this->query .= $prefix . $this->getTimestampColumn($timestampColumn);
             }
         }
+
+        if ($this->foreign) {
+            foreach ($this->foreign as $foreign) {
+                $this->query .= $prefix . $this->getForeign($foreign);
+            }
+        }
+    }
+
+    protected function setUnique($column): string
+    {
+        $columnName = $column->getColumn();
+        return "UNIQUE `{$columnName}` (`{$columnName}`), " . PHP_EOL;
     }
 
     protected function getIdColumn(): string
@@ -74,6 +92,15 @@ class MysqlBuilder extends AbstractBuilder
         return trim($query) . "," . PHP_EOL;
     }
 
+    protected function getForeign(Foreign $foreign): string
+    {
+        $query = "foreign key (`{$foreign->getColumn()}`) references `{$foreign->getOn()}` (`{$foreign->getReferences()}`) ";
+        if ($foreign->getOnDelete()) {
+            $query .= "on delete {$foreign->getOnDelete()}";
+        }
+        return trim($query) . "," . PHP_EOL;
+    }
+
     protected function generalMethods(mixed $column, string $query): string
     {
         if (!$column->isNull()) {
@@ -85,7 +112,7 @@ class MysqlBuilder extends AbstractBuilder
         if (method_exists($column, 'getDefault')) {
             $default = $column->getDefault();
             if (!is_null($default)) {
-                if (!is_string($default)) $default = '"'. $default . '"';
+                if (!is_string($default)) $default = '"' . $default . '"';
                 $query .= "DEFAULT {$default}";
             }
         }
