@@ -4,6 +4,7 @@ namespace Faber\Core\Console\Commands\Makers;
 
 use Faber\Core\Console\Command;
 use Faber\Core\Console\MakerFromStub;
+use Faber\Core\Console\Writer\Writer;
 
 class MakeCommand extends Command
 {
@@ -18,5 +19,6 @@ class MakeCommand extends Command
             'app/Console/Commands/',
             $this->argument('command')
         );
+        Writer::success('Successful create command: ' . $this->argument('command'));
     }
 }

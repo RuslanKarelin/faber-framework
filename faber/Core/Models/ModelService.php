@@ -74,4 +74,12 @@ class ModelService implements DBService
         $this->connection->destroy($sqlQuery);
         return true;
     }
+
+    /**
+     * @throws \Faber\Core\Exceptions\DBException
+     */
+    public function exec(string $sqlQuery): void
+    {
+        $this->connection->exec($sqlQuery);
+    }
 }

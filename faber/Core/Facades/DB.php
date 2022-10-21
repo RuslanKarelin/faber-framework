@@ -43,6 +43,9 @@ use Faber\Core\Utils\Collection;
  * @method static bool destroy()
  * @method static mixed find(int $id)
  * @method static Paginator paginate(?int $perPage = null)
+ * @method static bool tableExists(string $table)
+ * @method static void createDatabase()
+ * @method static void dropTable(string $table)
  *
  * @see Builder
  */

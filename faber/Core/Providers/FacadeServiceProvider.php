@@ -9,6 +9,7 @@ use Faber\Core\Contracts\Hash\Hash;
 use Faber\Core\Contracts\Log\Log;
 use Faber\Core\Contracts\Mail\Mail;
 use Faber\Core\Contracts\Validator\Validator;
+use Faber\Core\Database\Migrations\Schema;
 use Faber\Core\Request\Request;
 use Faber\Core\Response\Response;
 use Faber\Core\Route\Route;
@@ -29,5 +30,6 @@ class FacadeServiceProvider extends ServiceProvider
         $this->container->bind('Auth', Auth::class);
         $this->container->bind('Hash', Hash::class);
         $this->container->bind('Mail', Mail::class);
+        $this->container->bind('Schema', Schema::class);
     }
 }

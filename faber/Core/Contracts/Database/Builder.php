@@ -38,4 +38,6 @@ interface Builder
     public function destroy(): bool;
     public function find(int $id): mixed;
     public function paginate(?int $perPage = null): Paginator;
+    public function tableExists(string $table): bool;
+    public function dropTable(string $table): void;
 }

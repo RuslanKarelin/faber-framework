@@ -13,4 +13,5 @@ interface DBService
     public function insert(string $sqlQuery, array $data): bool;
     public function update(string $sqlQuery, array $data, mixed $object = null): bool;
     public function destroy(string $sqlQuery, mixed $object = null): bool;
+    public function exec(string $sqlQuery): void;
 }

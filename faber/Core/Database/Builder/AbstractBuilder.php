@@ -40,7 +40,8 @@ abstract class AbstractBuilder implements Builder
 
     public function table(string $tableName): static
     {
-        $this->className = DB::getClassNameFromTableName($this->tableName = $tableName);
+        $this->tableName = $tableName;
+        $this->className = $this->className ?? DB::getClassNameFromTableName($this->tableName);
         return $this;
     }
 
@@ -51,6 +52,9 @@ abstract class AbstractBuilder implements Builder
 
     public function createStubModel(): Model
     {
-        return new $this->className();
+        return new $this->className;
     }
+
+    abstract public function tableExists(string $table): bool;
+    abstract public function dropTable(string $table): void;
 }

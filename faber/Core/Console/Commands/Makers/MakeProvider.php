@@ -4,6 +4,7 @@ namespace Faber\Core\Console\Commands\Makers;
 
 use Faber\Core\Console\Command;
 use Faber\Core\Console\MakerFromStub;
+use Faber\Core\Console\Writer\Writer;
 
 class MakeProvider extends Command
 {
@@ -18,5 +19,6 @@ class MakeProvider extends Command
             'app/Providers/',
             $this->argument('provider')
         );
+        Writer::success('Successful create provider: ' . $this->argument('provider'));
     }
 }

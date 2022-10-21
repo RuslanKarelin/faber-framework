@@ -17,5 +17,6 @@ return [
             'strict' => true,
             'engine' => null,
         ],
-    ]
+    ],
+    'migrationPath' => 'database/migrations'
 ];

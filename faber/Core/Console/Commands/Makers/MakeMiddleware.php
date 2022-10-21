@@ -4,6 +4,7 @@ namespace Faber\Core\Console\Commands\Makers;
 
 use Faber\Core\Console\Command;
 use Faber\Core\Console\MakerFromStub;
+use Faber\Core\Console\Writer\Writer;
 
 class MakeMiddleware extends Command
 {
@@ -18,5 +19,6 @@ class MakeMiddleware extends Command
             'app/Middleware/',
             $this->argument('middleware')
         );
+        Writer::success('Successful create middleware: ' . $this->argument('middleware'));
     }
 }

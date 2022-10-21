@@ -12,7 +12,6 @@ use Faber\Core\Models\Relations\BelongsTo;
 use Faber\Core\Models\Relations\HasMany;
 use Faber\Core\Models\Relations\HasOne;
 use Faber\Core\Models\Relations\Relation;
-use Faber\Core\Request\Request;
 use Faber\Core\Utils\Collection;
 
 /**

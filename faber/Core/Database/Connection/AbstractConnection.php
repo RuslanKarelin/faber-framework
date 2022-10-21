@@ -17,6 +17,15 @@ abstract class AbstractConnection implements Connection
         $this->PDO = null;
     }
 
+    public function exec(string $query): void
+    {
+        try {
+            $this->PDO->exec($query);
+        } catch (\Exception $exception) {
+            throw new DBException($exception, $exception->getCode());
+        }
+    }
+
     public function query(string $query): array|null
     {
         $STH = $this->PDO->query($query);
