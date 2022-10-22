@@ -38,7 +38,7 @@ class Migrate extends Command
             $filePath = $path . DIRECTORY_SEPARATOR . $file;
             $migrationFileName = pathinfo($filePath, PATHINFO_FILENAME);
             if (in_array($migrationFileName, $this->completedMigrations)) continue;
-            $object = new (include $filePath)();
+            $object = new (include $filePath);
             try {
                 $object->up();
                 $successfulMigrations[] = [

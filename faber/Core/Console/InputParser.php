@@ -22,7 +22,6 @@ class InputParser
                     $argArray = explode('=', $arg);
                     static::$arguments[$argArray[0]] = $argArray[1];
                 } else {
-                    //static::$arguments[$arg] = true;
                     static::$arguments[] = $arg;
                 }
             }

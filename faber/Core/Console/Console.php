@@ -22,21 +22,32 @@ class Console
             $namespace = $this->helper->getNamespace(pathinfo($command));
             if (!$namespace) continue;
             $signature = $namespace::getSignature();
-            [$commandName, $commandArguments] = SignatureParse::parse($signature);
+            [$commandName, $commandArguments, $optionalParameters] = SignatureParse::parse($signature);
             $this->commands[$commandName] = [
                 'signature' => $signature,
                 'arguments' => $commandArguments,
                 'namespace' => $namespace,
+                'optionalParameters' => $optionalParameters,
             ];
         }
         return $this;
+    }
+
+    protected function clearArguments(array $command, array $commandArguments): array
+    {
+        foreach ($command['optionalParameters'] as $parameter) {
+            if (!array_key_exists($parameter, $commandArguments)) {
+                unset($command['arguments'][array_search($parameter, $command['arguments'])]);
+            }
+        }
+        return $command;
     }
 
     protected function runCommand(array $argv): void
     {
         [$commandName, $commandArguments] = InputParser::parse($argv);
         if (isset($this->commands[$commandName])) {
-            $command = $this->commands[$commandName];
+            $command = $this->clearArguments($this->commands[$commandName], $commandArguments);
             $commandArguments = array_combine($command['arguments'], $commandArguments);
             $commandObject = $this->reflection->createObject($command['namespace']);
             $commandObject->setArguments($commandArguments);
