@@ -5,53 +5,21 @@ namespace Faber\Core\Console;
 use Dotenv\Dotenv;
 use Faber\Core\DI\Container;
 use Faber\Core\DI\Reflection;
-use Faber\Core\Enums\App;
-use Faber\Core\Filesystem\Finder;
-use Faber\Core\Helpers\Str;
 use Faber\Core\Providers\ServiceProvider;
 use Faber\Core\Exceptions\ConsoleCommandException;
-use Faber\Core\Contracts\Filesystem\Filesystem;
 
 require_once dirname(__DIR__) . '/Helpers/Global.php';
 
-class FaberConsole
+class Console
 {
     protected array $commands = [];
     protected Reflection $reflection;
-    protected Filesystem $filesystem;
-
-    protected function getCommands(): array
-    {
-        $appCommandsPath = root_path('app/Console/Commands');
-        return array_merge(
-            (new Finder())->path(dirname(__DIR__) . '/Console/Commands')->recursive()->getFiles(),
-            $this->filesystem->exist($appCommandsPath) ?
-                (new Finder())->path($appCommandsPath)->recursive()->getFiles() : []
-        );
-    }
-
-    protected function prepareNamespace(string $folderName, array $pathInfo): string
-    {
-        $dirName = explode($folderName, $pathInfo['dirname']);
-        return Str::ucfirst($folderName) .
-            str_replace('/', '\\', $dirName[1]) . '\\' . $pathInfo['filename'];
-    }
-
-    protected function getNamespace(array $pathInfo): ?string
-    {
-        $namespace = null;
-        if (str_contains($pathInfo['dirname'], App::FRAMEWORK_FOLDER)) {
-            $namespace = $this->prepareNamespace(App::FRAMEWORK_FOLDER, $pathInfo);
-        } elseif (str_contains($pathInfo['dirname'], App::APP_FOLDER)) {
-            $namespace = $this->prepareNamespace(App::APP_FOLDER, $pathInfo);
-        }
-        return $namespace;
-    }
+    protected Helper $helper;
 
     protected function load(): static
     {
-        foreach ($this->getCommands() as $command) {
-            $namespace = $this->getNamespace(pathinfo($command));
+        foreach ($this->helper->getCommands() as $command) {
+            $namespace = $this->helper->getNamespace(pathinfo($command));
             if (!$namespace) continue;
             $signature = $namespace::getSignature();
             [$commandName, $commandArguments] = SignatureParse::parse($signature);
@@ -83,7 +51,7 @@ class FaberConsole
         Dotenv::createImmutable(root_path())->safeLoad();
         (new ServiceProvider())->handle();
         $this->reflection = Container::getInstance()->get(Reflection::class);
-        $this->filesystem = $this->reflection->createObject(Filesystem::class);
+        $this->helper = $this->reflection->createObject(Helper::class);
     }
 
     /**

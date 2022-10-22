@@ -15,6 +15,11 @@ class Command
         return static::$signature;
     }
 
+    public static function getDescription(): string
+    {
+        return static::$description;
+    }
+
     public function setArguments(array $arguments): void
     {
         $this->arguments = $arguments;
