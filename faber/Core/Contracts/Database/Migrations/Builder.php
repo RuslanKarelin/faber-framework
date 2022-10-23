@@ -29,4 +29,28 @@ interface Builder
     public function updateTable(): void;
 
     public function foreign(string $column): Foreign;
+
+    public function dropColumn(string|array $column): void;
+
+    public function primary(string $index): void;
+
+    public function unique(string $index): void;
+
+    public function index(string $index): void;
+
+    public function fullText(string $index): void;
+
+    public function spatialIndex(string $index): void;
+
+    public function dropForeign(string|array $index): void;
+
+    public function dropPrimary(string $index): void;
+
+    public function dropUnique(string $index): void;
+
+    public function dropIndex(string $index): void;
+
+    public function dropFullText(string $index): void;
+
+    public function dropSpatialIndex(string $index): void;
 }

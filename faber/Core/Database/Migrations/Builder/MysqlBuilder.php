@@ -7,13 +7,33 @@ use Faber\Core\Database\Migrations\Builder\Columns\IntegerColumn;
 use Faber\Core\Database\Migrations\Builder\Columns\StringColumn;
 use Faber\Core\Database\Migrations\Builder\Columns\TextColumn;
 use Faber\Core\Database\Migrations\Builder\Columns\TimestampColumn;
+use Faber\Core\Database\Migrations\Builder\Drop\DropColumn;
+use Faber\Core\Database\Migrations\Builder\Drop\DropForeign;
+use Faber\Core\Database\Migrations\Builder\Drop\DropFullText;
+use Faber\Core\Database\Migrations\Builder\Drop\DropIndex;
+use Faber\Core\Database\Migrations\Builder\Drop\DropPrimary;
+use Faber\Core\Database\Migrations\Builder\Drop\DropSpatialIndex;
+use Faber\Core\Database\Migrations\Builder\Drop\DropUnique;
 use Faber\Core\Database\Migrations\Builder\Foreign\Foreign;
+use Faber\Core\Database\Migrations\Builder\Index\FullText;
+use Faber\Core\Database\Migrations\Builder\Index\Index;
+use Faber\Core\Database\Migrations\Builder\Index\Primary;
+use Faber\Core\Database\Migrations\Builder\Index\SpatialIndex;
+use Faber\Core\Database\Migrations\Builder\Index\Unique;
 
 class MysqlBuilder extends AbstractBuilder
 {
     protected function prepareQuery(): void
     {
         $prefix = $this->isUpdate ? 'ADD ' : '';
+        $this->setColumns($prefix);
+        $this->setDropColumns();
+        $this->setIndexes($prefix);
+        $this->setDropIndexes();
+    }
+
+    protected function setColumns(string $prefix): void
+    {
         if ($this->string) {
             foreach ($this->string as $stringColumn) {
                 $this->query .= $prefix . $this->getStringColumn($stringColumn);
@@ -42,10 +62,92 @@ class MysqlBuilder extends AbstractBuilder
                 $this->query .= $prefix . $this->getTimestampColumn($timestampColumn);
             }
         }
+    }
 
+
+    protected function setIndexes(string $prefix): void
+    {
         if ($this->foreign) {
             foreach ($this->foreign as $foreign) {
                 $this->query .= $prefix . $this->getForeign($foreign);
+            }
+        }
+
+        if ($this->primary) {
+            foreach ($this->primary as $primary) {
+                $this->query .= $this->getPrimary($primary);
+            }
+        }
+
+        if ($this->unique) {
+            foreach ($this->unique as $unique) {
+                $this->query .= $this->getUnique($unique);
+            }
+        }
+
+        if ($this->fullText) {
+            foreach ($this->fullText as $fullText) {
+                $this->query .= $this->getFullText($fullText);
+            }
+        }
+
+        if ($this->index) {
+            foreach ($this->index as $index) {
+                $this->query .= $this->getIndex($index);
+            }
+        }
+
+        if ($this->spatialIndex) {
+            foreach ($this->spatialIndex as $spatialIndex) {
+                $this->query .= $this->getSpatialIndex($spatialIndex);
+            }
+        }
+    }
+
+    protected function setDropIndexes(): void
+    {
+        if ($this->dropForeign) {
+            foreach ($this->dropForeign as $dropForeign) {
+                $this->query .= $this->getDropForeign($dropForeign);
+            }
+        }
+
+        if ($this->dropPrimary) {
+            foreach ($this->dropPrimary as $dropPrimary) {
+                $this->query .= $this->getDropPrimary($dropPrimary);
+            }
+        }
+
+        if ($this->dropUnique) {
+            foreach ($this->dropUnique as $dropUnique) {
+                $this->query .= $this->getDropUnique($dropUnique);
+            }
+        }
+
+        if ($this->dropFullText) {
+            foreach ($this->dropFullText as $dropFullText) {
+                $this->query .= $this->getDropFullText($dropFullText);
+            }
+        }
+
+        if ($this->dropIndex) {
+            foreach ($this->dropIndex as $dropIndex) {
+                $this->query .= $this->getDropIndex($dropIndex);
+            }
+        }
+
+        if ($this->dropSpatialIndex) {
+            foreach ($this->dropSpatialIndex as $dropSpatialIndex) {
+                $this->query .= $this->getDropSpatialIndex($dropSpatialIndex);
+            }
+        }
+    }
+
+    protected function setDropColumns(): void
+    {
+        if ($this->dropColumn) {
+            foreach ($this->dropColumn as $dropColumn) {
+                $this->query .= $this->getDropColumn($dropColumn);
             }
         }
     }
@@ -99,6 +201,74 @@ class MysqlBuilder extends AbstractBuilder
             $query .= "on delete {$foreign->getOnDelete()}";
         }
         return trim($query) . "," . PHP_EOL;
+    }
+
+    protected function getDropColumn(DropColumn $column): string
+    {
+        $query = "DROP `{$column->getColumn()}` ";
+        return trim($query) . "," . PHP_EOL;
+    }
+
+    protected function getPrimary(Primary $index): string
+    {
+        $query = "ADD PRIMARY `{$index->getIndex()}` (`{$index->getIndex()}`) ";
+        return trim($query) . "," . PHP_EOL;
+    }
+
+    protected function getUnique(Unique $index): string
+    {
+        $query = "ADD UNIQUE `{$index->getIndex()}` (`{$index->getIndex()}`) ";
+        return trim($query) . "," . PHP_EOL;
+    }
+
+    protected function getIndex(Index $index): string
+    {
+        $query = "ADD INDEX `{$index->getIndex()}` (`{$index->getIndex()}`) ";
+        return trim($query) . "," . PHP_EOL;
+    }
+
+    protected function getFullText(FullText $index): string
+    {
+        $query = "ADD FULLTEXT `{$index->getIndex()}` (`{$index->getIndex()}`) ";
+        return trim($query) . "," . PHP_EOL;
+    }
+
+    protected function getSpatialIndex(SpatialIndex $index): string
+    {
+        $query = "ADD SPATIAL `{$index->getIndex()}` (`{$index->getIndex()}`) ";
+        return trim($query) . "," . PHP_EOL;
+    }
+
+    protected function getDropPrimary(DropPrimary $index): string
+    {
+        return $this->getDropIndex($index);
+    }
+
+    protected function getDropForeign(DropForeign $index): string
+    {
+        $query = "DROP FOREIGN KEY `{$index->getIndex()}` ";
+        return trim($query) . "," . PHP_EOL;
+    }
+
+    protected function getDropUnique(DropUnique $index): string
+    {
+        return $this->getDropIndex($index);
+    }
+
+    protected function getDropIndex(DropIndex $index): string
+    {
+        $query = "DROP INDEX `{$index->getIndex()}` ";
+        return trim($query) . "," . PHP_EOL;
+    }
+
+    protected function getDropFullText(DropFullText $index): string
+    {
+        return $this->getDropIndex($index);
+    }
+
+    protected function getDropSpatialIndex(DropSpatialIndex $index): string
+    {
+        return $this->getDropIndex($index);
     }
 
     protected function generalMethods(mixed $column, string $query): string

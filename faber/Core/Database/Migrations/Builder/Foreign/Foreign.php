@@ -4,9 +4,9 @@ namespace Faber\Core\Database\Migrations\Builder\Foreign;
 
 class Foreign
 {
-    protected string $references;
-    protected string $on;
-    protected string $onDelete;
+    protected string $references = '';
+    protected string $on = '';
+    protected string $onDelete = '';
 
     public function getReferences(): string
     {

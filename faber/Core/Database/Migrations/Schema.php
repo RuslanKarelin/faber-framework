@@ -40,4 +40,53 @@ class Schema
             DB::dropTable($table);
         }
     }
+
+    public function dropColumn(string $table, string|array $column): void
+    {
+        $this->builder->table($table);
+        $this->builder->dropColumn($column);
+        $this->builder->updateTable();
+    }
+
+    public function dropForeign(string $table, string $index): void
+    {
+        $this->builder->table($table);
+        $this->builder->dropForeign($index);
+        $this->builder->updateTable();
+    }
+
+    public function dropPrimary(string $table, string $index): void
+    {
+        $this->builder->table($table);
+        $this->builder->dropPrimary($index);
+        $this->builder->updateTable();
+    }
+
+    public function dropUnique(string $table, string $index): void
+    {
+        $this->builder->table($table);
+        $this->builder->dropUnique($index);
+        $this->builder->updateTable();
+    }
+
+    public function dropIndex(string $table, string $index): void
+    {
+        $this->builder->table($table);
+        $this->builder->dropUnique($index);
+        $this->builder->updateTable();
+    }
+
+    public function dropFullText(string $table, string $index): void
+    {
+        $this->builder->table($table);
+        $this->builder->dropFullText($index);
+        $this->builder->updateTable();
+    }
+
+    public function dropSpatialIndex(string $table, string $index): void
+    {
+        $this->builder->table($table);
+        $this->builder->dropSpatialIndex($index);
+        $this->builder->updateTable();
+    }
 }
