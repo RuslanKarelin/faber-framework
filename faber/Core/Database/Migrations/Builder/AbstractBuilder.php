@@ -4,8 +4,10 @@ namespace Faber\Core\Database\Migrations\Builder;
 
 use Faber\Core\Contracts\Database\Migrations\Builder;
 use Faber\Core\Contracts\Database\Migrations\MigrationService;
+use Faber\Core\Database\Migrations\Builder\Columns\BigIntegerColumn;
 use Faber\Core\Database\Migrations\Builder\Columns\IntegerColumn;
 use Faber\Core\Database\Migrations\Builder\Columns\StringColumn;
+use Faber\Core\Database\Migrations\Builder\Columns\LongTextColumn;
 use Faber\Core\Database\Migrations\Builder\Columns\TextColumn;
 use Faber\Core\Database\Migrations\Builder\Columns\TimestampColumn;
 use Faber\Core\Database\Migrations\Builder\Drop\DropColumn;
@@ -28,10 +30,12 @@ abstract class AbstractBuilder implements Builder
     protected string $table;
     protected bool $isCreate = false;
     protected bool $isUpdate = false;
-    protected ?IntegerColumn $id = null;
+    protected ?BigIntegerColumn $id = null;
     protected array $string = [];
+    protected array $bigInteger = [];
     protected array $integer = [];
     protected array $text = [];
+    protected array $longText = [];
     protected array $timestamps = [];
     protected array $foreign = [];
     protected array $primary = [];
@@ -53,7 +57,11 @@ abstract class AbstractBuilder implements Builder
 
     abstract protected function getIntegerColumn(IntegerColumn $column): string;
 
+    abstract protected function getBigIntegerColumn(BigIntegerColumn $column): string;
+
     abstract protected function getTextColumn(TextColumn $column): string;
+
+    abstract protected function getLongTextColumn(LongTextColumn $column): string;
 
     abstract protected function getTimestampColumn(TimestampColumn $column): string;
 
@@ -113,6 +121,11 @@ abstract class AbstractBuilder implements Builder
         return $this->string[] = new StringColumn($column, $length);
     }
 
+    public function bigInteger(string $column): BigIntegerColumn
+    {
+        return $this->bigInteger[] = new BigIntegerColumn($column);
+    }
+
     public function integer(string $column): IntegerColumn
     {
         return $this->integer[] = new IntegerColumn($column);
@@ -120,12 +133,17 @@ abstract class AbstractBuilder implements Builder
 
     public function id(string $column = 'id')
     {
-        $this->id = (new IntegerColumn($column))->unsigned()->increments()->primary();
+        $this->id = (new BigIntegerColumn($column))->unsigned()->increments()->primary();
     }
 
     public function text(string $column): TextColumn
     {
         return $this->text[] = new TextColumn($column);
+    }
+
+    public function longText(string $column): LongTextColumn
+    {
+        return $this->longText[] = new LongTextColumn($column);
     }
 
     public function timestamp(string $column): TimestampColumn

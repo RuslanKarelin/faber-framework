@@ -1,0 +1,20 @@
+<?php
+
+namespace App\Jobs:namespace;
+
+use Faber\Core\Contracts\Jobs\Queue;
+use Faber\Core\Jobs\Traits\Dispatchable;
+use Faber\Core\Jobs\Traits\Queueable;
+
+class :class implements Queue
+{
+    use Dispatchable, Queueable;
+
+    public function __construct()
+    {
+    }
+
+    public function handle()
+    {
+    }
+}

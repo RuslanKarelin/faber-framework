@@ -3,8 +3,10 @@
 namespace Faber\Core\Database\Migrations\Builder;
 
 use Faber\Core\Database\Migrations\Builder\AbstractBuilder;
+use Faber\Core\Database\Migrations\Builder\Columns\BigIntegerColumn;
 use Faber\Core\Database\Migrations\Builder\Columns\IntegerColumn;
 use Faber\Core\Database\Migrations\Builder\Columns\StringColumn;
+use Faber\Core\Database\Migrations\Builder\Columns\LongTextColumn;
 use Faber\Core\Database\Migrations\Builder\Columns\TextColumn;
 use Faber\Core\Database\Migrations\Builder\Columns\TimestampColumn;
 use Faber\Core\Database\Migrations\Builder\Drop\DropColumn;
@@ -45,6 +47,12 @@ class MysqlBuilder extends AbstractBuilder
             }
         }
 
+        if ($this->bigInteger) {
+            foreach ($this->bigInteger as $bigIntegerColumn) {
+                $this->query .= $prefix . $this->getBigIntegerColumn($bigIntegerColumn);
+            }
+        }
+
         if ($this->integer) {
             foreach ($this->integer as $integerColumn) {
                 $this->query .= $prefix . $this->getIntegerColumn($integerColumn);
@@ -54,6 +62,12 @@ class MysqlBuilder extends AbstractBuilder
         if ($this->text) {
             foreach ($this->text as $textColumn) {
                 $this->query .= $prefix . $this->getTextColumn($textColumn);
+            }
+        }
+
+        if ($this->longText) {
+            foreach ($this->longText as $longTextColumn) {
+                $this->query .= $prefix . $this->getLongTextColumn($longTextColumn);
             }
         }
 
@@ -75,31 +89,31 @@ class MysqlBuilder extends AbstractBuilder
 
         if ($this->primary) {
             foreach ($this->primary as $primary) {
-                $this->query .= $this->getPrimary($primary);
+                $this->query .= $prefix . $this->getPrimary($primary);
             }
         }
 
         if ($this->unique) {
             foreach ($this->unique as $unique) {
-                $this->query .= $this->getUnique($unique);
+                $this->query .= $prefix . $this->getUnique($unique);
             }
         }
 
         if ($this->fullText) {
             foreach ($this->fullText as $fullText) {
-                $this->query .= $this->getFullText($fullText);
+                $this->query .= $prefix . $this->getFullText($fullText);
             }
         }
 
         if ($this->index) {
             foreach ($this->index as $index) {
-                $this->query .= $this->getIndex($index);
+                $this->query .= $prefix . $this->getIndex($index);
             }
         }
 
         if ($this->spatialIndex) {
             foreach ($this->spatialIndex as $spatialIndex) {
-                $this->query .= $this->getSpatialIndex($spatialIndex);
+                $this->query .= $prefix . $this->getSpatialIndex($spatialIndex);
             }
         }
     }
@@ -160,7 +174,7 @@ class MysqlBuilder extends AbstractBuilder
 
     protected function getIdColumn(): string
     {
-        return $this->getIntegerColumn($this->id);
+        return $this->getBigIntegerColumn($this->id);
     }
 
     protected function getStringColumn(StringColumn $column): string
@@ -180,9 +194,26 @@ class MysqlBuilder extends AbstractBuilder
         return trim($query) . "," . PHP_EOL;
     }
 
+    protected function getBigIntegerColumn(BigIntegerColumn $column): string
+    {
+        $query = "`{$column->getColumn()}` bigint ";
+        if ($column->isUnsigned()) $query .= "unsigned ";
+        $query = $this->generalMethods($column, $query);
+        if ($column->isAutoIncrement()) $query .= "AUTO_INCREMENT ";
+        if ($column->isPrimaryKey()) $query .= "PRIMARY KEY ";
+        return trim($query) . "," . PHP_EOL;
+    }
+
     protected function getTextColumn(TextColumn $column): string
     {
         $query = "`{$column->getColumn()}` text ";
+        $query = $this->generalMethods($column, $query);
+        return trim($query) . "," . PHP_EOL;
+    }
+
+    protected function getLongTextColumn(LongTextColumn $column): string
+    {
+        $query = "`{$column->getColumn()}` longtext ";
         $query = $this->generalMethods($column, $query);
         return trim($query) . "," . PHP_EOL;
     }
@@ -211,31 +242,31 @@ class MysqlBuilder extends AbstractBuilder
 
     protected function getPrimary(Primary $index): string
     {
-        $query = "ADD PRIMARY `{$index->getIndex()}` (`{$index->getIndex()}`) ";
+        $query = "PRIMARY `{$index->getIndex()}` (`{$index->getIndex()}`) ";
         return trim($query) . "," . PHP_EOL;
     }
 
     protected function getUnique(Unique $index): string
     {
-        $query = "ADD UNIQUE `{$index->getIndex()}` (`{$index->getIndex()}`) ";
+        $query = "UNIQUE `{$index->getIndex()}` (`{$index->getIndex()}`) ";
         return trim($query) . "," . PHP_EOL;
     }
 
     protected function getIndex(Index $index): string
     {
-        $query = "ADD INDEX `{$index->getIndex()}` (`{$index->getIndex()}`) ";
+        $query = "INDEX `{$index->getIndex()}` (`{$index->getIndex()}`) ";
         return trim($query) . "," . PHP_EOL;
     }
 
     protected function getFullText(FullText $index): string
     {
-        $query = "ADD FULLTEXT `{$index->getIndex()}` (`{$index->getIndex()}`) ";
+        $query = "FULLTEXT `{$index->getIndex()}` (`{$index->getIndex()}`) ";
         return trim($query) . "," . PHP_EOL;
     }
 
     protected function getSpatialIndex(SpatialIndex $index): string
     {
-        $query = "ADD SPATIAL `{$index->getIndex()}` (`{$index->getIndex()}`) ";
+        $query = "SPATIAL `{$index->getIndex()}` (`{$index->getIndex()}`) ";
         return trim($query) . "," . PHP_EOL;
     }
 

@@ -52,6 +52,14 @@ trait BuilderCRUD
 
     public function destroy(mixed $object = null): bool
     {
+        if (is_int($object)) {
+            $this->where($this->createStubModel()->getKeyName(), $object);
+            $object = null;
+        }
+        if (is_array($object)) {
+            $this->whereIn($this->createStubModel()->getKeyName(), $object);
+            $object = null;
+        }
         $this->delete = 'delete from `' . $this->tableName . '`';
         $this->prepareQueryString();
         return $this->dbService->destroy($this->toSql(), $object);

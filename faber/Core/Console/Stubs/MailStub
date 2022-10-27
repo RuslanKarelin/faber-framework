@@ -1,0 +1,15 @@
+<?php
+
+namespace App\Mail:namespace;
+
+use Faber\Core\Mail\Mail;
+
+class :class extends Mail
+{
+    protected string $subject = 'subject';
+
+    public function __construct()
+    {
+        parent::__construct();
+    }
+}

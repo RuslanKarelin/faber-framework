@@ -21,6 +21,7 @@ return [
         Faber\Core\Providers\DatabaseServiceProvider::class,
         Faber\Core\Providers\MigrationBuilderServiceProvider::class,
         Faber\Core\Providers\MailServiceProvider::class,
+        Faber\Core\Providers\JobServiceProvider::class,
         Faber\Core\Providers\FacadeServiceProvider::class,
         App\Providers\AppServiceProvider::class,
     ],

@@ -2,6 +2,7 @@
 
 namespace Faber\Core\Contracts\Database\Migrations;
 
+use Faber\Core\Database\Migrations\Builder\Columns\BigIntegerColumn;
 use Faber\Core\Database\Migrations\Builder\Columns\IntegerColumn;
 use Faber\Core\Database\Migrations\Builder\Columns\StringColumn;
 use Faber\Core\Database\Migrations\Builder\Columns\TextColumn;
@@ -13,6 +14,8 @@ interface Builder
     public function table(string $table): void;
 
     public function string(string $column, int $length = 255): StringColumn;
+
+    public function bigInteger(string $column): BigIntegerColumn;
 
     public function integer(string $column): IntegerColumn;
 

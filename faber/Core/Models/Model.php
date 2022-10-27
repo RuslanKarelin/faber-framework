@@ -45,7 +45,7 @@ use Faber\Core\Utils\Collection;
  * @method static mixed create(array $data): mixed;
  * @method static bool insert(array $data)
  * @method static bool update(array $data)
- * @method static bool destroy()
+ * @method static bool destroy(mixed $data = null)
  * @method static static|null find(int|string $id)
  * @method static Paginator paginate(?int $perPage = null)
  *
