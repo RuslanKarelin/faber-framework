@@ -40,7 +40,6 @@ trait BuilderCRUD
 
     public function update(array $data, mixed $object = null): bool
     {
-        //$data = $this->createStubModel()->getFillableData($data);
         $placeholders = array_map(function ($field) {
             return $field . '=:' . $field;
         }, array_keys($data));

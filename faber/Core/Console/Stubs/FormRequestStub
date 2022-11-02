@@ -1,0 +1,22 @@
+<?php
+
+namespace App\Requests:namespace;
+
+use Faber\Core\Request\RequestForm;
+
+class :class extends RequestForm
+{
+    public function rules(): array
+    {
+        return [
+
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+
+        ];
+    }
+}
