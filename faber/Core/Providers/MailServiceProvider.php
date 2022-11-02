@@ -13,5 +13,6 @@ class MailServiceProvider extends ServiceProvider
     {
         $this->container->bind(IMail::class, Mail::class);
         $this->container->singleton(MailDriver::class, DriverFactory::create(config('mail.default')));
+        $this->container->bind('Mail', IMail::class);
     }
 }

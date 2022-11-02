@@ -136,29 +136,29 @@ if (!function_exists('trans')) {
         }
         return $langArray ?? null;
     }
+}
 
-    if (!function_exists('old')) {
-        function old(string $field): ?string
-        {
-            $old = Session::get(SessionEnum::OLD);
-            if ($old && isset($old[$field])) {
-                return $old[$field];
-            }
-            return null;
+if (!function_exists('old')) {
+    function old(string $field): ?string
+    {
+        $old = Session::get(SessionEnum::OLD);
+        if ($old && isset($old[$field])) {
+            return $old[$field];
         }
+        return null;
     }
+}
 
-    if (!function_exists('auth')) {
-        function auth(): Auth
-        {
-            return Container::getInstance()->get(Auth::class);
-        }
+if (!function_exists('auth')) {
+    function auth(): Auth
+    {
+        return Container::getInstance()->get(Auth::class);
     }
+}
 
-    if (!function_exists('csrf_token')) {
-        function csrf_token(): ?string
-        {
-            return Session::token();
-        }
+if (!function_exists('csrf_token')) {
+    function csrf_token(): ?string
+    {
+        return Session::token();
     }
 }

@@ -14,5 +14,6 @@ class SessionServiceProvider extends ServiceProvider
         $this->container->bind(SessionHandlerInterface::class, $sessionHandler::class);
         $this->container->singleton(SessionHandlerInterface::class, $sessionHandler);
         $this->container->singleton(SessionStore::class, new SessionStore(SessionStore::SESSION_NAME, $sessionHandler));
+        $this->container->bind('Session', SessionStore::class);
     }
 }

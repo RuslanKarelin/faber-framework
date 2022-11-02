@@ -11,5 +11,6 @@ class HashServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->container->bind(IHash::class, HashFactory::getHashDriver(config('hashing.driver')));
+        $this->container->bind('Hash', IHash::class);
     }
 }

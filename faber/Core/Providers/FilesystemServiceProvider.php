@@ -10,5 +10,6 @@ class FilesystemServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->container->bind(IFilesystem::class, Filesystem::class);
+        $this->container->bind('Filesystem', IFilesystem::class);
     }
 }

@@ -10,5 +10,6 @@ class LogServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->container->bind(ILog::class, Log::class);
+        $this->container->bind('Log', ILog::class);
     }
 }

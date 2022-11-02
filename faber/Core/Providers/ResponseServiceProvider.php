@@ -9,5 +9,6 @@ class ResponseServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->container->singleton(Response::class, $this->reflection->createObject(Response::class));
+        $this->container->bind('Response', Response::class);
     }
 }

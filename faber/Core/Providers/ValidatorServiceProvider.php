@@ -10,5 +10,6 @@ class ValidatorServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->container->bind(IValidator::class, Validator::class);
+        $this->container->bind('Validator', IValidator::class);
     }
 }
