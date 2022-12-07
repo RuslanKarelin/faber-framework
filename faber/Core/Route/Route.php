@@ -170,7 +170,7 @@ class Route
     {
         unset($matches[0][0]);
         $matches[0] = array_map(function ($value) {
-            if ($value == '0' || intval($value) !== 0) $value = intval($value);
+            if (is_numeric($value)) $value = intval($value);
             return $value;
         }, $matches[0]);
         return array_values($matches[0]);
